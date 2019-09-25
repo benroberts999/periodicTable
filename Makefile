@@ -1,6 +1,6 @@
 # Which compiler: (g++, clang++) [no spaces]
 CXX=g++
-CXX=clang++
+#CXX=clang++
 
 ################################################################################
 #Set directories for input files/source code (ID),
