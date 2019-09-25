@@ -2,8 +2,8 @@
 
 Command-line periodic table, with electron configurations and nuclear data
 
- * Requires c++11 or higher
- * All program compiled using the Makefile (run _$make_)
+ * Compiled using the Makefile (run _$make_, must habe 'make' installed)
+ * Alternatively, compile with command: _$g++ src/AtomInfo.cpp src/periodicTable.cpp -o periodicTable_
  * No other dependencies
 
 
