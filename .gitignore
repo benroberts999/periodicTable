@@ -1,7 +1,6 @@
 /*
 !src/
-!obj/
-obj/*.o
+src/*.o
 !.gitignore
 !Makefile
 !*.md
