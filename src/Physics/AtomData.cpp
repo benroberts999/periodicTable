@@ -1,4 +1,5 @@
-#include "AtomInfo.hpp"
+#include "AtomData.hpp"
+#include "AtomData_PeriodicTable.hpp"
 #include <algorithm>
 #include <array>
 #include <cctype> //char from string
@@ -10,18 +11,18 @@
 #include <vector>
 
 //******************************************************************************
-std::string NonRelSEConfig::symbol() {
-  return std::to_string(n) + AtomInfo::l_symbol(l) + std::to_string(num);
+std::string NonRelSEConfig::symbol() const {
+  return std::to_string(n) + AtomData::l_symbol(l) + std::to_string(num);
 }
 
-bool NonRelSEConfig::ok() {
+bool NonRelSEConfig::ok() const {
   if (l + 1 > n || l < 0 || n < 1 || num < 0 || num > 4 * l + 2)
     return false;
   return true;
 }
 
 //******************************************************************************
-namespace AtomInfo {
+namespace AtomData {
 
 int defaultA(int Z)
 // c++14: can make constexpr ?
@@ -41,6 +42,15 @@ std::string atomicSymbol(int Z) {
   if (atom == periodic_table.end())
     return std::to_string(Z);
   return atom->symbol;
+}
+
+std::string atomicName(int Z) {
+  static auto match_Z = [Z](const Element &atom) { return atom.Z == Z; };
+  auto atom =
+      std::find_if(periodic_table.begin(), periodic_table.end(), match_Z);
+  if (atom == periodic_table.end())
+    return std::string("E") + std::to_string(Z);
+  return atom->name;
 }
 
 // Given an atomic symbol (H, He, etc.), will return Z
@@ -84,7 +94,7 @@ int symbol_to_l(const std::string &l_str) {
     // Can work if given an int as a string:
     l = std::stoi(l_str);
   } catch (...) { // don't abort here (might get nice error message later)
-    std::cerr << "\nFAIL AtomInfo::69 Invalid l: " << l_str << "?\n";
+    std::cerr << "\nFAIL AtomData::69 Invalid l: " << l_str << "?\n";
   }
   return l;
 }
@@ -93,8 +103,10 @@ int symbol_to_l(const std::string &l_str) {
 std::string coreConfig(const std::string &in_ng) {
   // Note: must return SAME string if no matching Nobel Gas found
   // (so that this doesn't break if I give it a full term list)
-  using StringPair = std::pair<std::string, std::string>;
-  auto match_ng = [&](const StringPair &ng) { return ng.first == in_ng; };
+  using Strinum_pointsair = std::pair<std::string, std::string>;
+  auto match_ng = [&](const Strinum_pointsair &ng) {
+    return ng.first == in_ng;
+  };
   auto ng_config =
       std::find_if(nobelGasses.begin(), nobelGasses.end(), match_ng);
   if (ng_config == nobelGasses.end())
@@ -139,7 +151,7 @@ std::vector<NonRelSEConfig> core_parser(const std::string &str_core_in)
     found = str_core_in.length();
   auto first_term = str_core_in.substr(0, found);
   auto rest = str_core_in.substr(found);
-  auto str_core = AtomInfo::coreConfig(first_term) + rest;
+  auto str_core = AtomData::coreConfig(first_term) + rest;
 
   // Move comma-seperated string into an array (vector)
   std::vector<std::string> term_str_list;
@@ -167,7 +179,7 @@ std::vector<NonRelSEConfig> core_parser(const std::string &str_core_in)
       num = std::stoi(term.substr(l_position + 1));
       if (l_position == term.size())
         throw;
-      l = AtomInfo::symbol_to_l(term.substr(l_position, 1));
+      l = AtomData::symbol_to_l(term.substr(l_position, 1));
     } catch (...) {
       term_ok = false;
     }
@@ -233,7 +245,7 @@ std::string guessCoreConfigStr(const int total_core_electrons) {
 
 //------------------------------------------------------------------------------
 std::vector<NonRelSEConfig> core_guess(const int total_core_electrons) {
-  auto core_configs = AtomInfo::core_parser(AtomInfo::filling_order);
+  auto core_configs = AtomData::core_parser(AtomData::filling_order);
   auto nel = total_core_electrons;
   for (auto &c : core_configs) {
     if (c.num > nel) {
@@ -265,7 +277,7 @@ std::vector<DiracSEnken> listOfStates_nk(const std::string &in_list) {
       } catch (...) {
       }
       auto l_str = std::string(1, c);
-      auto l = AtomInfo::symbol_to_l(l_str);
+      auto l = AtomData::symbol_to_l(l_str);
 
       // for (int n = l + 1; n <= n_max; ++n) {
       //   if (l != 0)
@@ -371,4 +383,4 @@ void printTable() {
   std::cout << "        " << output_z_a << "\n\n";
 }
 
-} // namespace AtomInfo
+} // namespace AtomData

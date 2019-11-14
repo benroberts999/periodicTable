@@ -1,5 +1,4 @@
 #pragma once
-#include "AtomInfo_PeriodicTable.hpp"
 #include <array>
 #include <string>
 #include <vector>
@@ -12,8 +11,13 @@ struct NonRelSEConfig {
   NonRelSEConfig(int in_n = 0, int in_l = -1, int in_num = 0)
       : n(in_n), l(in_l), num(in_num) {}
 
-  std::string symbol();
-  bool ok();
+  std::string symbol() const;
+  bool ok() const;
+
+  double frac() const {
+    int filling = 2 * (2 * l + 1);
+    return (num < filling) ? double(num) / double(filling) : 1;
+  };
 
   // comparitor overloads:
   bool operator==(const NonRelSEConfig &other) const {
@@ -39,12 +43,14 @@ struct DiracSEnken { // name OK? too short?
 
 //******************************************************************************
 //******************************************************************************
-namespace AtomInfo {
+namespace AtomData {
 
 int defaultA(int Z);
 
 std::string atomicSymbol(int Z);
+std::string atomicName(int Z);
 
+inline int get_z(int z) { return z; }
 int get_z(const std::string &at);
 
 std::string l_symbol(int l);
@@ -98,4 +104,4 @@ constexpr int kappaFromIndex(int i) {
 constexpr int twojFromIndex(int i) { return (i % 2 == 0) ? i + 1 : i; }
 constexpr int lFromIndex(int i) { return (i % 2 == 0) ? i / 2 : (i + 1) / 2; }
 
-} // namespace AtomInfo
+} // namespace AtomData

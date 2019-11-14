@@ -1,38 +1,23 @@
-# Which compiler: (g++, clang++) [no spaces]
+## Which compiler: (g++, clang++) [no spaces]
 CXX=g++
 #CXX=clang++
 
+## Optional: set directory for executables (by default: current directory)
+XD=.
+
 ################################################################################
-#Set directories for input files/source code (ID),
-# output object files (OD)
-ID=./src
+## None of the below options should need changing
+################################################################################
+## Set directories for source files (SD), and output object files (OD)
+SD=./src
 OD=./src
 
-WARN=-Wall -Wpedantic -Wextra
-CXXFLAGS= -std=c++11 -O3 $(WARN) -I$(ID)
-COMP=$(CXX) -c -o $@ $< $(CXXFLAGS)
-LINK=$(CXX) -o $@ $^ $(CXXFLAGS)
+## c++ standard. must be at least c++14
+CXXSTD=-std=c++14
+#CXXSTD=-std=c++17
 
-#Default make rule:
-all: periodicTable
+## Build config + options:
+include $(SD)/buildOptions.mk
 
-################################################################################
-## Dependencies:
-$(OD)/AtomInfo.o: $(ID)/AtomInfo.cpp $(ID)/AtomInfo.hpp \
-$(ID)/AtomInfo_PeriodicTable.hpp
-	$(COMP)
-
-$(OD)/periodicTable.o: $(ID)/periodicTable.cpp $(ID)/Nuclear.hpp \
-$(ID)/Nuclear_DataTable.hpp $(ID)/AtomInfo.hpp \
-$(ID)/AtomInfo_PeriodicTable.hpp
-	$(COMP)
-
-################################################################################
-# Link + build all final programs
-
-periodicTable: $(OD)/periodicTable.o $(OD)/AtomInfo.o
-	$(LINK)
-
-.PHONY: clean
-clean:
-	rm -f periodicTable $(OD)/periodicTable.o $(OD)/AtomInfo.o
+## Build targets (must update if new programs/files are added):
+include $(SD)/buildTargets.mk
