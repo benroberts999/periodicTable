@@ -6,6 +6,7 @@ Command-line periodic table, with electron configurations and nuclear data
  * Alternatively, compile with command:
 _$g++ src/Physics/AtomData.cpp src/Physics/NuclearData.cpp src/periodicTable.cpp -o periodicTable -I./src/_
  * No other dependencies
+ * (Optional: to install globally, change the XD [executable directory] to "XD=/bin/" in Makefile, and run make with sudo.)
 
 Gives info regarding particular element, including Z, default A, and electron configuration.
 Takes input in one line from command line.
