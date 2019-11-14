@@ -18,7 +18,7 @@ Usage: (examples)
  * Note: numbers come from online database, and have some errors,
 so should be checked if needed.
 
- Or, enter 'c' Data to print list of physics constants)
+ Or, enter 'c' to print list of physics constants:
   * _$./periodicTable c_        Prints values for some handy physical constants
 
 Note: ground-state electron configurations are "guessed", and can sometimes be incorrect.
